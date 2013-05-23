@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Elk : API client for 46elks messaging service" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Elk</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jage/elk">View on GitHub</a>
+
+          <h1 id="project_title">Elk</h1>
+          <h2 id="project_tagline">API client for 46elks messaging service</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/jage/elk/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/jage/elk/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Elk - 46elks API-client</h1>
+
+<p>Ruby client for 46elks "Voice, SMS &amp; MMS" service. <a href="http://46elks.com/">http://46elks.com/</a>
+At the moment the API only supports sending SMS messages.</p>
+
+<h2>Requirements</h2>
+
+<ul>
+<li>API account at 46elks.com</li>
+</ul><h2>Install</h2>
+
+<p>Install via RubyGems</p>
+
+<pre><code>gem install elk
+</code></pre>
+
+<h2>Source and development</h2>
+
+<p>The source for Elk is available on Github:</p>
+
+<pre><code>https://github.com/jage/elk
+</code></pre>
+
+<p>elk uses rspec and webmock for testing, do a <code>bundle install</code> for all the development requirements.</p>
+
+<h2>Usage</h2>
+
+<p>elk can be used to allocate a phone numbers, manage the numbers and send/recieve messages through these numbers.</p>
+
+<h3>Authentication and configuration</h3>
+
+<p>First thing when using elk is to set the authentication parameters</p>
+
+<pre><code>require 'elk'
+
+Elk.configure do |config|
+  config.username = 'USERNAME'
+  config.password = 'PASSWORD'
+end
+</code></pre>
+
+<h3>Numbers</h3>
+
+<p>To be able to send and recieve messages, a number is needed. Several numbers can be allocated.</p>
+
+<pre><code>number = Elk::Number.allocate(:sms_url =&gt; 'http://myservice.se/callback/newsms.php', :country =&gt; 'se')
+# =&gt; #&lt;Elk::Number:0x0000010282aa70 @country="se", @sms_url="http://myservice.se/callback/newsms.php", @status="yes", @number_id="n03e7db70cc06c1ff85e09a2b3f86dd62", @number="+46766861034", @capabilities=[:sms], @loaded_at=2011-07-17 15:23:55 +0200&gt;
+</code></pre>
+
+<p>Get all numbers</p>
+
+<pre><code>numbers = Elk::Number.all
+# =&gt; [#&lt;Elk::Number ...&gt;, #&lt;Elk::Number ...&gt;]
+</code></pre>
+
+<p>Change number settings</p>
+
+<pre><code>number.sms_url = 'http://myservice.se/callback/newsms.php'
+number.save
+# =&gt; true
+</code></pre>
+
+<p>Deallocate a number.
+Beware that there is no way to get your number back once it has been deallocated!</p>
+
+<pre><code>number.deallocate!
+# =&gt; true
+number.status
+# =&gt; :deallocated
+</code></pre>
+
+<h3>SMS</h3>
+
+<p>Send SMS. Messages can be sent from one of the allocated numbers or an arbitrary alphanumeric string of at most 11 characters.</p>
+
+<pre><code>Elk::SMS.send(:from =&gt; 'MyService', :to =&gt; '+46704508449', :message =&gt; 'Your order #171 has now been sent!')
+# =&gt; #&lt;Elk::SMS:0x0000010179d7e8 @from="MyService", @to="+46704508449", @message="Your order #171 has now been sent!", @message_id="sdc39a7926d37159b6985283e32f43251", @created_at=2011-07-17 16:21:13 +0200, @loaded_at=2011-07-17 16:21:13 +0200&gt;
+</code></pre>
+
+<p>Receiving SMS does not require Elk, but should be of interest anyway.
+Example with Sinatra:</p>
+
+<pre><code>post '/receive' do
+  if request.params['message'] == 'Hello'
+    # Sends a return SMS with message "world!"
+    "world!"
+  end
+end
+</code></pre>
+
+<p>SMS history</p>
+
+<pre><code>Elk::SMS.all
+# =&gt; [#&lt;Elk::SMS ...&gt;, #&lt;Elk::SMS ...&gt;, &lt;Elk::SMS ...&gt;]
+</code></pre>
+
+<h2>Copyright</h2>
+
+<p>Copyright (c) 2011 Johan Eckerström. See LICENSE for details.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Elk maintained by <a href="https://github.com/jage">jage</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
